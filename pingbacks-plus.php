@@ -96,6 +96,10 @@ class Pingbacks_Plus {
 		
 		$pagelinkedto = get_permalink( $post->ID );
 		
+		//verify not an internal link
+		if ( substr( bloginfo( 'url' ), $pagelinkedfrom ) !== false )
+			die( -1 );
+			
 		//verify not already pinged
 		if ( $foo = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_author_url = %s", $post_ID, $pagelinkedfrom ) ) ) 
 			die( -1 );
