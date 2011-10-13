@@ -34,7 +34,7 @@ class Pingbacks_Plus {
 	 */
 	function enqueue_js() {
 	
-		if ( !isset( $_SERVER['HTTP_REFERER'] ) || empty( $_SERVER['HTTP_REFERER'] ) || !is_single() || is_user_logged_in() || substr( bloginfo( 'url' ), $_SERVER['HTTP_REFERER'] ) !== false )
+		if ( !isset( $_SERVER['HTTP_REFERER'] ) || empty( $_SERVER['HTTP_REFERER'] ) || !is_single() || is_user_logged_in() || stripos( $_SERVER['HTTP_REFERER'], get_bloginfo( 'url' ) ) !== false )
 			return;
 	
 		$file = 'js/ping';
@@ -97,7 +97,7 @@ class Pingbacks_Plus {
 		$pagelinkedto = get_permalink( $post->ID );
 		
 		//verify not an internal link
-		if ( substr( bloginfo( 'url' ), $pagelinkedfrom ) !== false )
+		if ( stripos( $pagelinkedfrom, get_bloginfo( 'url' ) ) !== false )
 			die( -1 );
 			
 		//verify not already pinged
