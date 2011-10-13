@@ -14,7 +14,7 @@ class Pingbacks_Plus {
 	public $ua = 'pingbacks-plus';
 	public $cookie = 'wp_referrer_check';
 	public $query_var = 'pingback';
-	public $this->version = '0.1a';
+	public $version = '0.1a';
 	
 	/**
 	 * Registers Hooks
