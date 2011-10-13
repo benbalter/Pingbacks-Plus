@@ -34,7 +34,7 @@ class Pingbacks_Plus {
 	 */
 	function enqueue_js() {
 	
-		if ( !isset( $_SERVER['HTTP_REFERER'] ) || empty( $_SERVER['HTTP_REFERER'] ) || !is_single() || is_user_logged_in() )
+		if ( !isset( $_SERVER['HTTP_REFERER'] ) || empty( $_SERVER['HTTP_REFERER'] ) || !is_single() || is_user_logged_in() || substr( bloginfo( 'url' ), $_SERVER['HTTP_REFERER'] ) !== false )
 			return;
 	
 		$file = 'js/ping';
