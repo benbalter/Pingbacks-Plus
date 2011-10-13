@@ -23,6 +23,7 @@ class Pingbacks_Plus {
 		add_action( 'wp_head', array( &$this, 'enqueue_js') );
 		add_filter( 'query_vars', array( &$this, 'add_query_var' ), 10, 1 );
 		add_action( 'init', array( &$this, 'process_ping') );
+		add_filter( 'comments_array', array( &$this, 'filter_comments_array'), 10, 2 );
 		
 		$file = 'js/jquery.cookie';
 		$file .= ( WP_DEBUG ) ? '.dev.js' : '.js';
@@ -172,8 +173,7 @@ class Pingbacks_Plus {
 		$commentdata = compact('comment_post_ID', 'comment_author', 'comment_author_url', 'comment_author_email', 'comment_content', 'comment_type', 'comment_agent' );
 		
 		//hide our faux-pingbacks on the front end
-		if ( !is_admin() && apply_filters( 'pingbacks_plus_hide_frontend', true ) ); 
-			add_filter( 'pre_comment_user_agent', array( &$this, 'user_agent_filter' ), 10, 1 );
+		add_filter( 'pre_comment_user_agent', array( &$this, 'user_agent_filter' ), 10, 1 );
 		
 		$comment_ID = wp_new_comment($commentdata);
 
@@ -196,8 +196,33 @@ class Pingbacks_Plus {
 	 * @returns array the modified clauses
 	 */
 	function comments_clauses_filter( $comments_clauses ) {
+
+		if ( !apply_filters( 'pingbacks_plus_hide_frontend', true ) )
+			return $comments_clauses;
+
 		$comments_clauses['where'] .= " AND comment_agent != '" . $this->ua . "'";
 		return $comments_clauses;
+	}
+	
+	/**
+	 * Filters comment array to hide our pings on the frontend
+	 * @param array $comments the original comment array
+	 * @param int $PostID the post ID
+	 * @returns array the modified comment arary
+	 */
+	function filter_comments_array( $comments, $postID ) {
+
+		if ( !apply_filters( 'pingbacks_plus_hide_frontend', true ) )
+			return $comments;
+		
+		foreach ( $comments as $ID => $comment ) {
+		
+			if ( $comment->comment_agent == $this->ua )
+				unset( $comments[$ID] );
+		
+		}
+		
+		return $comments;
 	}
 
 }
