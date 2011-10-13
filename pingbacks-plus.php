@@ -14,7 +14,8 @@ class Pingbacks_Plus {
 	public $ua = 'pingbacks-plus';
 	public $cookie = 'wp_referrer_check';
 	public $query_var = 'pingback';
-
+	public $this->version = '0.1a';
+	
 	/**
 	 * Registers Hooks
 	 */
@@ -25,7 +26,7 @@ class Pingbacks_Plus {
 		
 		$file = 'js/jquery.cookie';
 		$file .= ( WP_DEBUG ) ? '.dev.js' : '.js';
-		wp_register_script( 'jquery-cookie', plugins_url( $file , __FILE__ ), array( 'jquery' ), filemtime( dirname( __FILE__ ) . '/' . $file ), true );
+		wp_register_script( 'jquery-cookie', plugins_url( $file , __FILE__ ), array( 'jquery' ), $this-version, true );
 	
 	}
 	
@@ -36,7 +37,7 @@ class Pingbacks_Plus {
 	
 		$file = 'js/ping';
 		$file .= ( WP_DEBUG ) ? '.dev.js' : '.js';
-		wp_enqueue_script( 'pingbacks-plus', plugins_url( $file, __FILE__ ), array( 'jquery', 'jquery-cookie' ), filemtime( dirname( __FILE__ ) . '/' . $file ), true );
+		wp_enqueue_script( 'pingbacks-plus', plugins_url( $file, __FILE__ ), array( 'jquery', 'jquery-cookie' ), $this->version, true );
 		
 		global $post;
 		
