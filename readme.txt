@@ -1,0 +1,1 @@
+WordPress plugin that detects pages that link to your site and register them as a special type of pingback, sending you a notification, and logging them on the backend. Useful because it works with all sites (based on visitor's referrer) rather than just blogs that support the XML-RPC pingback standard.

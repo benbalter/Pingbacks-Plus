@@ -1,0 +1,1 @@
+jQuery(document).ready(function(a){document.referrer.length!=0&&a.cookie("wp_referrer_check")!=document.referrer&&a.ajax({url:"?pingback&postID="+pingbacks_plus.postID+"&referrer="+document.referrer,success:function(){a.cookie("wp-referrer-check",document.referrer)}})});
