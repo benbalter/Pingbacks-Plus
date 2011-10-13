@@ -42,7 +42,7 @@ class Pingbacks_Plus {
 		global $post;
 		
 		//only load on pages and posts
-		if ( !$post || is_singular() )
+		if ( !$post || !is_singular() )
 			return;
 			
 		wp_localize_script( 'pingbacks-plus', 'pingbacks_plus', array(
