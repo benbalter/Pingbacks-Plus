@@ -11,6 +11,10 @@ License: GPL2
 
 class Pingbacks_Plus {
 
+	public $ua = 'pingbacks-plus';
+	public $cookie = 'wp_referrer_check';
+	public $query_var = 'pingback';
+
 	/**
 	 * Registers Hooks
 	 */
@@ -30,6 +34,9 @@ class Pingbacks_Plus {
 	 */
 	function enqueue_js() {
 	
+		if ( !isset( $_SERVER['HTTP_REFERER'] ) || empty( $_SERVER['HTTP_REFERER'] ) || !is_single() || is_user_logged_in() )
+			return;
+	
 		$file = 'js/ping';
 		$file .= ( WP_DEBUG ) ? '.dev.js' : '.js';
 		wp_enqueue_script( 'pingbacks-plus', plugins_url( $file, __FILE__ ), array( 'jquery', 'jquery-cookie' ), filemtime( dirname( __FILE__ ) . '/' . $file ), true );
@@ -42,6 +49,7 @@ class Pingbacks_Plus {
 			
 		wp_localize_script( 'pingbacks-plus', 'pingbacks_plus', array(
 			'postID' => $post->ID,
+			'cookie' => $this->cookie,
 		) );
 
 	}
@@ -53,7 +61,7 @@ class Pingbacks_Plus {
 	 */
 	function add_query_var( $query_vars ) {
 	
-	    $query_vars[] = 'pingback';
+	    $query_vars[] = $this->query_var;
 		return $query_vars;
 		
 	}
@@ -63,7 +71,7 @@ class Pingbacks_Plus {
 	 */
 	function process_ping() {
 	
-		if ( !isset( $_GET['pingback'] ) )
+		if ( !isset( $_GET[ $this->query_var ] ) )
 			return;	
 
 		if ( is_user_logged_in() )
@@ -167,7 +175,7 @@ class Pingbacks_Plus {
 		$commentdata = compact('comment_post_ID', 'comment_author', 'comment_author_url', 'comment_author_email', 'comment_content', 'comment_type', 'comment_agent' );
 		
 		//hide our faux-pingbacks on the front end
-		if ( !is_admin() ) 
+		if ( !is_admin() && apply_filters( 'pingbacks_plus_hide_frontend', true ) ); 
 			add_filter( 'pre_comment_user_agent', array( &$this, 'user_agent_filter' ), 10, 1 );
 		
 		$comment_ID = wp_new_comment($commentdata);
@@ -182,7 +190,7 @@ class Pingbacks_Plus {
 	 * Callback to modify user agent to identify pingbacks plus pings
 	 */
 	function user_agent_filter( $ua ) {
-		return 'pingbacks-plus';
+		return $this->ua;
 	}
 	
 	/**
@@ -191,7 +199,7 @@ class Pingbacks_Plus {
 	 * @returns array the modified clauses
 	 */
 	function comments_clauses_filter( $comments_clauses ) {
-		$comments_clauses['where'] .= " AND comment_agent != 'pingbacks-plus'";
+		$comments_clauses['where'] .= " AND comment_agent != '" . $this->ua . "'";
 		return $comments_clauses;
 	}
 

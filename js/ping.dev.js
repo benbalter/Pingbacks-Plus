@@ -5,7 +5,7 @@ jQuery(document).ready( function($){
 		return;
 	
 	//referrer already checked
-	if ( $.cookie('wp_referrer_check') == document.referrer )
+	if ( $.cookie( pingbacks_plus.cookie ) == document.referrer )
 		return;
 		
 	//send ping
