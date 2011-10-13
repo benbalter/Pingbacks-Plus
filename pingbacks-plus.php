@@ -34,9 +34,6 @@ class Pingbacks_Plus {
 	 */
 	function enqueue_js() {
 	
-		if ( !isset( $_SERVER['HTTP_REFERER'] ) || empty( $_SERVER['HTTP_REFERER'] ) || ( !is_single() && !is_page() ) || is_user_logged_in() || stripos( $_SERVER['HTTP_REFERER'], get_bloginfo( 'url' ) ) !== false )
-			return;
-	
 		$file = 'js/ping';
 		$file .= ( WP_DEBUG ) ? '.dev.js' : '.js';
 		wp_enqueue_script( 'pingbacks-plus', plugins_url( $file, __FILE__ ), array( 'jquery', 'jquery-cookie' ), filemtime( dirname( __FILE__ ) . '/' . $file ), true );
