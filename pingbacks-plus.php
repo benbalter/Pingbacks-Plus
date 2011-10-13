@@ -42,7 +42,7 @@ class Pingbacks_Plus {
 		global $post;
 		
 		//only load on pages and posts
-		if ( !$post || ( !is_single() && !is_page() ) )
+		if ( !$post || is_singular() )
 			return;
 			
 		wp_localize_script( 'pingbacks-plus', 'pingbacks_plus', array(
@@ -73,6 +73,9 @@ class Pingbacks_Plus {
 			return;	
 
 		if ( is_user_logged_in() )
+			die( -1 );
+			
+		if ( !is_singular() )
 			die( -1 );
 			
 		if ( !isset( $_GET['postID'] ) || !isset( $_GET['referrer'] ) )
