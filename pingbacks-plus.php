@@ -35,24 +35,15 @@ class Pingbacks_Plus {
 	 */
 	function enqueue_js() {
 		global $post; 
+	
+		$file = 'js/ping';
+		$file .= ( WP_DEBUG ) ? '.dev.js' : '.js';
+		wp_enqueue_script( 'pingbacks-plus', plugins_url( $file, __FILE__ ), array( 'jquery', 'jquery-cookie' ), $this->version, true );
 		
 		wp_localize_script( 'pingbacks-plus', 'pingbacks_plus', array(
 			'postID' => $post->ID,
 			'cookie' => $this->cookie,
 		) );
-		
-		//only load on pages and posts when referrer is not own site and not logged in
-		if ( 	!isset( $_SERVER['HTTP_REFERER'] ) || 
-				empty( $_SERVER['HTTP_REFERER'] ) || 
-				!is_singular() || 
-				is_user_logged_in() || 
-				stripos( $_SERVER['HTTP_REFERER'], get_bloginfo( 'url' ) ) !== false 
-			)
-			return;
-	
-		$file = 'js/ping';
-		$file .= ( WP_DEBUG ) ? '.dev.js' : '.js';
-		wp_enqueue_script( 'pingbacks-plus', plugins_url( $file, __FILE__ ), array( 'jquery', 'jquery-cookie' ), $this->version, true );
 		
 	}
 
@@ -79,12 +70,9 @@ class Pingbacks_Plus {
 		if ( is_user_logged_in() )
 			die( -1 );
 			
-		if ( !is_singular() )
-			die( -1 );
-			
 		if ( !isset( $_GET['postID'] ) || !isset( $_GET['referrer'] ) )
 			die( -1 );
-			
+	
 		global $wpdb;
 		include_once(ABSPATH . WPINC . '/class-IXR.php');
 		include_once(ABSPATH . WPINC . '/class-wp-xmlrpc-server.php');
@@ -134,7 +122,7 @@ class Pingbacks_Plus {
 		$preg_target = preg_quote( $pagelinkedto, '|' );
 
 		foreach ( $p as $para ) {
-		
+
 			if ( strpos($para, $pagelinkedto) !== false ) { // it exists, but is it a link?
 				
 				preg_match("|<a[^>]+?" . $preg_target . "[^>]*>([^>]+?)</a>|", $para, $context);
