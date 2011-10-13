@@ -34,7 +34,7 @@ class Pingbacks_Plus {
 	 */
 	function enqueue_js() {
 	
-		if ( !isset( $_SERVER['HTTP_REFERER'] ) || empty( $_SERVER['HTTP_REFERER'] ) || !is_single() || is_user_logged_in() || stripos( $_SERVER['HTTP_REFERER'], get_bloginfo( 'url' ) ) !== false )
+		if ( !isset( $_SERVER['HTTP_REFERER'] ) || empty( $_SERVER['HTTP_REFERER'] ) || ( !is_single() && !is_page() ) || is_user_logged_in() || stripos( $_SERVER['HTTP_REFERER'], get_bloginfo( 'url' ) ) !== false )
 			return;
 	
 		$file = 'js/ping';
@@ -44,7 +44,7 @@ class Pingbacks_Plus {
 		global $post;
 		
 		//only load on pages and posts
-		if ( !$post || !is_single() )
+		if ( !$post || ( !is_single() && !is_page() ) )
 			return;
 			
 		wp_localize_script( 'pingbacks-plus', 'pingbacks_plus', array(
