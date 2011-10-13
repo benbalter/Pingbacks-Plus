@@ -34,22 +34,26 @@ class Pingbacks_Plus {
 	 * Enques ping javascript
 	 */
 	function enqueue_js() {
+		global $post; 
+		
+		wp_localize_script( 'pingbacks-plus', 'pingbacks_plus', array(
+			'postID' => $post->ID,
+			'cookie' => $this->cookie,
+		) );
+		
+		//only load on pages and posts when referrer is not own site and not logged in
+		if ( 	!isset( $_SERVER['HTTP_REFERER'] ) || 
+				empty( $_SERVER['HTTP_REFERER'] ) || 
+				!is_singular() || 
+				is_user_logged_in() || 
+				stripos( $_SERVER['HTTP_REFERER'], get_bloginfo( 'url' ) ) !== false 
+			)
+			return;
 	
 		$file = 'js/ping';
 		$file .= ( WP_DEBUG ) ? '.dev.js' : '.js';
 		wp_enqueue_script( 'pingbacks-plus', plugins_url( $file, __FILE__ ), array( 'jquery', 'jquery-cookie' ), $this->version, true );
 		
-		global $post;
-		
-		//only load on pages and posts
-		if ( !$post || !is_singular() )
-			return;
-			
-		wp_localize_script( 'pingbacks-plus', 'pingbacks_plus', array(
-			'postID' => $post->ID,
-			'cookie' => $this->cookie,
-		) );
-
 	}
 
 	/**
