@@ -19,7 +19,7 @@ class Pingbacks_Plus {
 		add_filter( 'query_vars', array( &$this, 'add_query_var' ), 10, 1 );
 		add_action( 'init', array( &$this, 'process_ping') );
 		
-		$file = 'jquery.cookie';
+		$file = 'js/jquery.cookie';
 		$file .= ( WP_DEBUG ) ? '.dev.js' : '.js';
 		wp_register_script( 'jquery-cookie', plugins_url( $file , __FILE__ ), array( 'jquery' ), filemtime( dirname( __FILE__ ) . '/' . $file ), true );
 	
@@ -30,7 +30,7 @@ class Pingbacks_Plus {
 	 */
 	function enqueue_js() {
 	
-		$file = 'ping';
+		$file = 'js/ping';
 		$file .= ( WP_DEBUG ) ? '.dev.js' : '.js';
 		wp_enqueue_script( 'pingbacks-plus', plugins_url( $file, __FILE__ ), array( 'jquery', 'jquery-cookie' ), filemtime( dirname( __FILE__ ) . '/' . $file ), true );
 		
