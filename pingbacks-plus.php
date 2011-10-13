@@ -83,12 +83,12 @@ class Pingbacks_Plus {
 		$xmlrpc = new wp_xmlrpc_server();
 		
 		//sanitze referrer, get post
-		$pagelinkedfrom = addslashes( $_GET['referrer'] );
+		$pagelinkedfrom = addslashes( $_GET['referrer'] ); 
 		$post_ID = (int) $_GET['postID'];
 		$post = get_post( $post_ID );
 
 		//verify post and pingable
-		if ( !$post || !pings_open( $post ) )
+		if ( !$post )
 			die( -1 );
 		
 		$pagelinkedto = get_permalink( $post->ID );
@@ -98,16 +98,16 @@ class Pingbacks_Plus {
 			die( -1 );
 			
 		//verify not already pinged
-		if ( $foo = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_author_url = %s", $post_ID, $pagelinkedfrom ) ) ) 
-			die( -1 );
-		
+		if ( $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_author_url = %s", $post_ID, $pagelinkedfrom ) ) ) 
+			die( -1 ); 
+
 		//verify source page exists
-		$linea = wp_remote_fopen( $pagelinkedfrom );
+		@ $linea = wp_remote_fopen( $pagelinkedfrom );
 		if ( !$linea )
 			die( -1 );
 		
 		//below inspired by class-wp-xmlrpc-server.php
-		
+
 		$linea = apply_filters('pre_remote_source', $linea, $pagelinkedto);
 
 		// Work around bug in strip_tags():
