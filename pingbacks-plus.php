@@ -74,6 +74,10 @@ class Pingbacks_Plus {
 		if ( !isset( $_GET['postID'] ) || !isset( $_GET['referrer'] ) )
 			die( -1 );
 	
+		//don't process twitter (use twitter mentions as comments for that)
+		if ( stripos( $_GET['referrer'], 'http://t.co/' ) !== false )
+			die( -1 );
+	
 		global $wpdb;
 		include_once(ABSPATH . WPINC . '/class-IXR.php');
 		include_once(ABSPATH . WPINC . '/class-wp-xmlrpc-server.php');
